@@ -1,4 +1,5 @@
-import os
+"""Modelo de datos"""
+
 from datetime import datetime
 import pandas as pd
 from sqlalchemy import create_engine, Column, Float, Date, Integer
@@ -6,14 +7,12 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.exc import IntegrityError, OperationalError
 from dotenv import load_dotenv
 
-# Cargar variables de entorno
+
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "default.db")
+# DATABASE_URL = os.getenv("DATABASE_URL", "default.db")
 engine = create_engine("sqlite:///database.db", echo=True)
 
-
-# Definir base de datos
 Base = declarative_base()
 
 

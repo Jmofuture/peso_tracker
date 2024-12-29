@@ -1,0 +1,27 @@
+name: Actualizar base de datos diariamente
+
+on:
+  schedule:
+    - cron: '0 10 * * *'  
+
+jobs:
+  update_database:
+    runs-on: ubuntu-latest 
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.13' 
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  
+
+      - name: Ejecutar script de actualización de la base de datos
+        run: |
+          python app.py  # Ejecuta tu script Python
