@@ -8,10 +8,10 @@ wheels/
 
 # Virtual environments
 .venv
-#.env
+.env
 
 #Xlsx
-#*.xlsx
+*.xlsx
 
 #settings
 settings.json
