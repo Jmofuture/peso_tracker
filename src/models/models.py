@@ -114,10 +114,8 @@ def insert_data_from_dataframe(df: pd.DataFrame) -> None:
         except ValueError as ve:
             print(f"Error al procesar la fila: {row.to_dict()} - {ve}")
 
-    # Insertar los registros en Supabase
     if records:
         try:
-            # Insertar los registros en la tabla 'peso_tracker'
             response = (
                 supabase.table("peso_tracker")
                 .upsert(records, on_conflict=["date"])
