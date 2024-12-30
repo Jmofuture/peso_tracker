@@ -28,4 +28,4 @@ jobs:
 
       - name: Ejecutar script de actualización de la base de datos
         run: |
-          python ./src/app.py  # Ejecuta tu script Python
+          python src/app.py # Ejecuta tu script Python
