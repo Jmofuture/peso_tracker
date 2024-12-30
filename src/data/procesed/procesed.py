@@ -88,5 +88,16 @@ def convert_columns_to_float(df: pd.DataFrame, date_column: str) -> pd.DataFrame
     return df
 
 
+def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
+    """Elimina las filas duplicadas basadas en la columna 'date'."""
+    try:
+        df = df.drop_duplicates(subset=["date"], keep="first")
+        print("Duplicados eliminados exitosamente.")
+        return df
+    except KeyError as e:
+        print(f"La columna 'date' no se encuentra en el DataFrame: {e}")
+        raise
+
+
 if __name__ == "__main__":
     pass

@@ -8,6 +8,7 @@ from data.procesed.procesed import (
     remove_columns,
     convert_columns_to_date,
     convert_columns_to_float,
+    remove_duplicates,
 )
 # from models import insert_into_supabase
 # from database import create_supabase_client
@@ -23,8 +24,9 @@ def main():
         dropper = remove_columns(rename, "Hora.de.publicación")
         dates = convert_columns_to_date(dropper, ["date"])
         floats = convert_columns_to_float(dates, "date")
+        duplicates = remove_duplicates(floats)
 
-        insert_data_from_dataframe(floats)
+        insert_data_from_dataframe(duplicates)
 
     except Exception as e:
         print("Fallo la creacion del cliente", {e})

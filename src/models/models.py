@@ -1,14 +1,22 @@
 """Modelo de datos"""
 
+import os
+import math
 from datetime import datetime
 import pandas as pd
 from sqlalchemy import create_engine, Column, Float, Date, Integer
 from sqlalchemy.orm import declarative_base, sessionmaker
-from sqlalchemy.exc import IntegrityError, OperationalError
 from dotenv import load_dotenv
+from supabase import create_client, Client
 
 
 load_dotenv()
+
+
+url: str = os.environ.get("SUPABASE_URL")
+key: str = os.environ.get("SUPABASE_KEY")
+supabase: Client = create_client(url, key)
+
 
 # DATABASE_URL = os.getenv("DATABASE_URL", "default.db")
 engine = create_engine("sqlite:///database.db", echo=True)
@@ -18,8 +26,10 @@ Base = declarative_base()
 
 class DailyExchangeRate(Base):
     __tablename__ = "daily_exchange_rates"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    date = Column(Date)
+    date = Column(
+        Date,
+        primary_key=True,
+    )
     usd_buy = Column(Float)
     usd_sell = Column(Float)
     ebrou_usd_buy = Column(Float)
@@ -55,83 +65,69 @@ Session = sessionmaker(bind=engine)
 
 
 def insert_data_from_dataframe(df: pd.DataFrame) -> None:
-    """Inserta datos de un DataFrame en la tabla 'daily_exchange_rates'."""
-    session = Session()
-    try:
-        # Reemplazar '..' con None
-        df = df.replace("..", 0.0)
+    """Inserta datos de un DataFrame en la tabla 'peso_tracker' en Supabase."""
 
-        # Asegurarse de que las fechas estén en el formato correcto
-        df["date"] = pd.to_datetime(df["date"]).dt.strftime("%d-%m-%Y")
+    if df is None:
+        print("El DataFrame está vacío o no se cargó correctamente.")
+        return
 
-        records = []
+    df.replace("..", None, inplace=True)
 
-        for _, row in df.iterrows():
-            try:
-                # Convertir fecha a formato correcto
-                date = datetime.strptime(str(row["date"]), "%d-%m-%Y").date()
+    df = df.map(lambda x: None if isinstance(x, float) and math.isnan(x) else x)
 
-                # Crear objeto para insertar, manejando valores nulos
-                record = DailyExchangeRate(
-                    date=date,
-                    usd_buy=float(row["usd_buy"])
-                    if row.get("usd_buy") not in [None, ""]
-                    else None,
-                    usd_sell=float(row["usd_sell"])
-                    if row.get("usd_sell") not in [None, ""]
-                    else None,
-                    ebrou_usd_buy=float(row["ebrou_usd_buy"])
-                    if row.get("ebrou_usd_buy") not in [None, ""]
-                    else None,
-                    ebrou_usd_sell=float(row["ebrou_usd_sell"])
-                    if row.get("ebrou_usd_sell") not in [None, ""]
-                    else None,
-                    eur_buy=float(row["eur_buy"])
-                    if row.get("eur_buy") not in [None, ""]
-                    else None,
-                    eur_sell=float(row["eur_sell"])
-                    if row.get("eur_sell") not in [None, ""]
-                    else None,
-                    ars_buy=float(row["ars_buy"])
-                    if row.get("ars_buy") not in [None, ""]
-                    else None,
-                    ars_sell=float(row["ars_sell"])
-                    if row.get("ars_sell") not in [None, ""]
-                    else None,
-                    brl_buy=float(row["brl_buy"])
-                    if row.get("brl_buy") not in [None, ""]
-                    else None,
-                    brl_sell=float(row["brl_sell"])
-                    if row.get("brl_sell") not in [None, ""]
-                    else None,
-                )
-                records.append(record)
+    df["date"] = pd.to_datetime(df["date"]).dt.strftime("%Y-%m-%d")
 
-            except ValueError as ve:
-                print(f"Error al procesar la fila: {row.to_dict()} - {ve}")
+    records = []
 
-        # Insertar todos los registros de una vez
-        if records:
-            session.bulk_save_objects(records)
-            session.commit()
-            print(f"Se insertaron {len(records)} registros en la base de datos.")
-        else:
-            print("No hay registros válidos para insertar.")
+    for _, row in df.iterrows():
+        try:
+            date = datetime.strptime(str(row["date"]), "%Y-%m-%d").date()
 
-    except IntegrityError as ie:
-        session.rollback()
-        print(f"Error de integridad en la base de datos: {str(ie)}")
+            record = {
+                "date": date.strftime("%Y-%m-%d"),
+                "usd_buy": None if pd.isna(row["usd_buy"]) else float(row["usd_buy"]),
+                "usd_sell": None
+                if pd.isna(row["usd_sell"])
+                else float(row["usd_sell"]),
+                "ebrou_usd_buy": None
+                if pd.isna(row["ebrou_usd_buy"])
+                else float(row["ebrou_usd_buy"]),
+                "ebrou_usd_sell": None
+                if pd.isna(row["ebrou_usd_sell"])
+                else float(row["ebrou_usd_sell"]),
+                "eur_buy": None if pd.isna(row["eur_buy"]) else float(row["eur_buy"]),
+                "eur_sell": None
+                if pd.isna(row["eur_sell"])
+                else float(row["eur_sell"]),
+                "ars_buy": None if pd.isna(row["ars_buy"]) else float(row["ars_buy"]),
+                "ars_sell": None
+                if pd.isna(row["ars_sell"])
+                else float(row["ars_sell"]),
+                "brl_buy": None if pd.isna(row["brl_buy"]) else float(row["brl_buy"]),
+                "brl_sell": None
+                if pd.isna(row["brl_sell"])
+                else float(row["brl_sell"]),
+            }
 
-    except OperationalError as oe:
-        session.rollback()
-        print(f"Error operativo en la base de datos: {str(oe)}")
+            records.append(record)
 
-    except Exception as e:
-        session.rollback()
-        print(f"Error inesperado al insertar los datos: {str(e)}")
+        except ValueError as ve:
+            print(f"Error al procesar la fila: {row.to_dict()} - {ve}")
 
-    finally:
-        session.close()
+    # Insertar los registros en Supabase
+    if records:
+        try:
+            # Insertar los registros en la tabla 'peso_tracker'
+            response = (
+                supabase.table("peso_tracker")
+                .upsert(records, on_conflict=["date"])
+                .execute()
+            )
+            print(f"Se insertaron {len(records)} registros en Supabase.")
+        except Exception as e:
+            print(f"Error al insertar los datos en Supabase: {str(e)}")
+    else:
+        print("No hay registros válidos para insertar.")
 
 
 if __name__ == "__main__":
