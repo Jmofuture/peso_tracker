@@ -27,5 +27,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Ejecutar script de actualización de la base de datos
+        env:
+          URL_DATAFRAME: ${{ secrets.URL_DATAFRAME }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
           python src/app.py # Ejecuta tu script Python
