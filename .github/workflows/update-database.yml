@@ -2,7 +2,7 @@ name: Cotizacion Peso
 
 on:
   schedule:
-    - cron: "0 13 * * *"
+    - cron: "15 12 * * *"
 
   push:
     branches:
