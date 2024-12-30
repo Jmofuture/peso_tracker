@@ -4,7 +4,7 @@ import os
 import math
 from datetime import datetime
 import pandas as pd
-from sqlalchemy import create_engine, Column, Float, Date, Integer
+from sqlalchemy import create_engine, Column, Float, Date
 from sqlalchemy.orm import declarative_base, sessionmaker
 from dotenv import load_dotenv
 from supabase import create_client, Client
