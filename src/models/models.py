@@ -4,8 +4,6 @@ import os
 import math
 from datetime import datetime
 import pandas as pd
-from sqlalchemy import create_engine, Column, Float, Date
-from sqlalchemy.orm import declarative_base, sessionmaker
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
@@ -18,52 +16,6 @@ key: str = os.environ.get("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
 
-# DATABASE_URL = os.getenv("DATABASE_URL", "default.db")
-engine = create_engine("sqlite:///database.db", echo=False)
-
-Base = declarative_base()
-
-
-class DailyExchangeRate(Base):
-    __tablename__ = "daily_exchange_rates"
-    date = Column(
-        Date,
-        primary_key=True,
-    )
-    usd_buy = Column(Float)
-    usd_sell = Column(Float)
-    ebrou_usd_buy = Column(Float)
-    ebrou_usd_sell = Column(Float)
-    eur_buy = Column(Float)
-    eur_sell = Column(Float)
-    ars_buy = Column(Float)
-    ars_sell = Column(Float)
-    brl_buy = Column(Float)
-    brl_sell = Column(Float)
-
-    def serialize(self):
-        """Método para serializar los datos."""
-        return {
-            "date": self.date,
-            "usd_buy": self.usd_buy,
-            "usd_sell": self.usd_sell,
-            "ebrou_usd_buy": self.ebrou_usd_buy,
-            "ebrou_usd_sell": self.ebrou_usd_sell,
-            "eur_buy": self.eur_buy,
-            "eur_sell": self.eur_sell,
-            "ars_buy": self.ars_buy,
-            "ars_sell": self.ars_sell,
-            "brl_buy": self.brl_buy,
-            "brl_sell": self.brl_sell,
-        }
-
-
-Base.metadata.create_all(engine)
-
-
-Session = sessionmaker(bind=engine)
-
-
 def insert_data_from_dataframe(df: pd.DataFrame) -> None:
     """Inserta datos de un DataFrame en la tabla 'peso_tracker' en Supabase."""
 
@@ -71,7 +23,7 @@ def insert_data_from_dataframe(df: pd.DataFrame) -> None:
         print("El DataFrame está vacío o no se cargó correctamente.")
         return
 
-    df.replace("..", None, inplace=True)
+    df.replace("..", None)
 
     df = df.map(lambda x: None if isinstance(x, float) and math.isnan(x) else x)
 
