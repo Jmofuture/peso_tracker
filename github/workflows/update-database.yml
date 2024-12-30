@@ -1,4 +1,4 @@
-name: Cotizacion diaria
+name: Cotizacion Peso
 
 on:
   schedule:
