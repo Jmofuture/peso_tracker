@@ -28,7 +28,7 @@ jobs:
 
       - name: Ejecutar script de cotizacion
         env:
-          PESO_SECRET: ${{ secrets.URL_DATAFRAME }}
+          URL_DATAFRAME: ${{ secrets.URL_DATAFRAME }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
