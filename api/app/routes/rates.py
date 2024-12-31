@@ -6,6 +6,7 @@ import uvicorn
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from fastapi import FastAPI, APIRouter, HTTPException
+from api.db_dependencies import supabase_client
 from api.models.schema import (
     ExchangeRateUSD,
     ExchangeRateBROU,
@@ -15,14 +16,10 @@ from api.models.schema import (
 )
 
 
-load_dotenv()
-
 app = FastAPI()
 router = APIRouter()
 
-SUPABASE_URL: str = os.getenv("SUPABASE_URL")
-SUPABASE_KEY: str = os.getenv("SUPABASE_KEY")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase = supabase_client()
 
 
 app = FastAPI(
