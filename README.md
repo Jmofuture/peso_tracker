@@ -12,29 +12,36 @@ El proyecto extrae los datos desde esta fuente, los procesa y los carga en una b
 
 ## Estructura del Proyecto
 
-peso_tracker/
-├── README.md
-├── pyproject.toml
-├── requirements.txt
-├── uv.lock
-├── .python-version
-├── etl/
-│ ├── main.py # Script principal para ejecutar el proceso ETL
-│ ├── data/  
-│ │ ├── **init**.py
-│ │ ├── procesed/ # Carpeta con los datos procesados
-│ │ │ ├── **init**.py
-│ │ │ └── procesed.py # Funciones de procesamiento de datos
-│ │ └── raw/ # Carpeta con los datos crudos extraídos
-│ │ ├── **init**.py
-│ │ └── raw.py # Funciones para la extracción de datos
-│ └── database/  
-│ ├── **init**.py
-│ ├── supabase_insertion.py # Función para insertar datos en la base de datos
-│ └── supabasedb.py # Configuración y conexión a Supabase
-└── .github/  
- └── workflows/  
- └── update-database.yml # Workflow para actualizar la base de datos
+## Estructura del Proyecto
+
+La estructura del proyecto es la siguiente:
+
+📁 **peso_tracker**  
+│  
+├── 📄 **README.md**  
+├── 📄 **pyproject.toml**  
+├── 📄 **requirements.txt**  
+├── 📄 **uv.lock**  
+├── 📄 **.python-version**  
+│  
+├── 📁 **etl**  
+│ ├── 📄 **main.py** # Script principal para ejecutar el proceso ETL  
+│ ├── 📁 **data**  
+│ │ ├── 📄 ****init**.py**  
+│ │ ├── 📁 **procesed** # Carpeta con los datos procesados  
+│ │ │ ├── 📄 ****init**.py**  
+│ │ │ └── 📄 **procesed.py** # Funciones de procesamiento de datos  
+│ │ └── 📁 **raw** # Carpeta con los datos crudos extraídos  
+│ │ ├── 📄 ****init**.py**  
+│ │ └── 📄 **raw.py** # Funciones para la extracción de datos  
+│ └── 📁 **database**  
+│ ├── 📄 ****init**.py**  
+│ ├── 📄 **supabase_insertion.py** # Función para insertar datos en la base de datos  
+│ └── 📄 **supabasedb.py** # Configuración y conexión a Supabase  
+│  
+└── 📁 **.github**  
+ └── 📁 **workflows**  
+ └── 📄 **update-database.yml** # Workflow para actualizar la base de datos
 
 ## Requisitos
 
