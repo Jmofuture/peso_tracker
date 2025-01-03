@@ -1,8 +1,10 @@
 # Peso Tracker
 
+## Descripción General
+
 Este proyecto es un ETL (Extract-Transform-Load) que extrae y procesa los datos históricos de la cotización del peso uruguayo (UYU) con respecto a diversas monedas como el dólar estadounidense (USD), el euro (EUR), el real brasileño (BRL) y el peso argentino (ARS). Los datos provienen del Instituto Nacional de Estadística de Uruguay (INE) y están disponibles de manera actualizada en la página oficial de estadísticas de series históricas.
 
-La extracción de los datos se realiza de manera **diaria**, y los datos procesados se almacenan en una base de datos en [**Supabase**](https://supabase.com/), para su posterior uso y análisis (En Proceso).
+La extracción de los datos se realiza de manera **diaria**, y los datos procesados se almacenan en una base de datos en <a href="https://supabase.com/" target="_blank">**Supabase**</a>, para su posterior uso y análisis.
 
 ## Dataset
 
