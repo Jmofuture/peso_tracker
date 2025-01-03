@@ -1,7 +1,10 @@
-"""app.py"""
+"""main.py"""
 
+import os
+from dotenv import load_dotenv
+from database.supabasedb import supabase_client
+from database.supabase_insertion import insert_data_from_dataframe
 from data.raw.raw import extract_data_from_url
-from models.models import insert_data_from_dataframe
 from data.procesed.procesed import (
     bytes_to_dataframe,
     rename_columns,
@@ -11,14 +14,15 @@ from data.procesed.procesed import (
     remove_duplicates,
 )
 
-# from models import insert_into_supabase
-# from database import create_supabase_client
-
 
 def main():
-    """Main function to fetch, prepare and insert data into Supabase."""
+    """Main function to fetch, prepare, and insert data into Supabase."""
 
     try:
+        load_dotenv()
+
+        table_name = os.getenv("SUPABASE_TABLE")
+
         data = extract_data_from_url()
         df = bytes_to_dataframe(data)
         rename = rename_columns(df)
@@ -27,10 +31,10 @@ def main():
         floats = convert_columns_to_float(dates, "date")
         duplicates = remove_duplicates(floats)
 
-        insert_data_from_dataframe(duplicates)
+        insert_data_from_dataframe(duplicates, supabase_client(), table_name)
 
     except Exception as e:
-        print("Fallo la creacion del cliente", {e})
+        print("Failed to create the Supabase client", {e})
 
 
 if __name__ == "__main__":

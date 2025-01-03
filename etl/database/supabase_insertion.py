@@ -1,23 +1,44 @@
 """Modelo de datos"""
 
-import os
 import math
 from datetime import datetime
 import pandas as pd
-from dotenv import load_dotenv
-from supabase import create_client, Client
 
 
-load_dotenv()
+def insert_data_from_dataframe(df: pd.DataFrame, dbclient, table_name: str) -> None:
+    """
+    Insert data from a pandas DataFrame into a Supabase table.
 
+    This function processes a DataFrame containing currency exchange data,
+    cleans and formats the data, and inserts it into the "peso_tracker" table
+    in a Supabase database. Rows with conflicting "date" values are upserted.
 
-url: str = os.environ.get("SUPABASE_URL")
-key: str = os.environ.get("SUPABASE_KEY")
-supabase: Client = create_client(url, key)
+    Args:
+        df (pd.DataFrame):
+            The DataFrame containing the data to be inserted. It should have the
+            following columns:
+            - "date": The date of the record (string or datetime).
+            - "usd_buy", "usd_sell", "ebrou_usd_buy", "ebrou_usd_sell",
+              "eur_buy", "eur_sell", "ars_buy", "ars_sell", "brl_buy", "brl_sell":
+              Numeric columns representing exchange rates for different currencies.
+        dbclient:
+            A Supabase client instance used to interact with the database.
 
+    Returns:
+        None
 
-def insert_data_from_dataframe(df: pd.DataFrame) -> None:
-    """Inserta datos de un DataFrame en la tabla 'peso_tracker' en Supabase."""
+    Raises:
+        ValueError:
+            If a row in the DataFrame contains invalid data that cannot be processed.
+        Exception:
+            If there is an error while inserting data into the database.
+
+    Notes:
+        - The function replaces any occurrence of ".." in the DataFrame with `None`.
+        - NaN values are also replaced with `None` for compatibility with the database.
+        - Dates are converted to the format "YYYY-MM-DD".
+        - Invalid rows (e.g., rows with parsing errors) are skipped, and a warning is printed.
+    """
 
     if df is None:
         print("El DataFrame está vacío o no se cargó correctamente.")
@@ -69,16 +90,16 @@ def insert_data_from_dataframe(df: pd.DataFrame) -> None:
     if records:
         try:
             response = (
-                supabase.table("peso_tracker")
+                dbclient.table(table_name)
                 .upsert(records, on_conflict=["date"])
                 .execute()
             )
-            print(f"Se insertaron {len(records)} registros en Supabase.")
+            print(f"Inserted {len(records)} records into Supabase")
         except Exception as e:
-            print(f"Error al insertar los datos en Supabase: {str(e)}")
+            print(f"Error inserting data into Supabase: {str(e)}")
     else:
-        print("No hay registros válidos para insertar.")
+        print("No valid records to insert")
 
 
 if __name__ == "__main__":
-    print("Modelo listo para recibir datos.")
+    print("Model ready to receive data")
