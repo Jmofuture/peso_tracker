@@ -2,6 +2,8 @@
 
 Este proyecto es un ETL (Extract-Transform-Load) que extrae y procesa los datos históricos de la cotización del peso uruguayo (UYU) con respecto a diversas monedas como el dólar estadounidense (USD), el euro (EUR), el real brasileño (BRL) y el peso argentino (ARS). Los datos provienen del Instituto Nacional de Estadística de Uruguay (INE) y están disponibles de manera actualizada en la página oficial de estadísticas de series históricas.
 
+La extracción de los datos se realiza de manera **diaria**, y los datos procesados se almacenan en una base de datos en [**Supabase**](https://supabase.com/), para su posterior uso y análisis (En Proceso).
+
 ## Dataset
 
 El dataset utilizado en este proyecto proviene del Instituto Nacional de Estadística de Uruguay, que ofrece datos históricos de la cotización de diversas monedas. Los datos se encuentran en la siguiente URL:
@@ -27,15 +29,15 @@ La estructura del proyecto es la siguiente:
 ├── 📁 **etl**  
 │ ├── 📄 **main.py** # Script principal para ejecutar el proceso ETL  
 │ ├── 📁 **data**  
-│ │ ├── 📄 ****init**.py**  
+│ │ ├── 📄 \***\*init**.py**  
 │ │ ├── 📁 **procesed** # Carpeta con los datos procesados  
-│ │ │ ├── 📄 ****init**.py**  
+│ │ │ ├── 📄 \*\***init**.py**  
 │ │ │ └── 📄 **procesed.py** # Funciones de procesamiento de datos  
 │ │ └── 📁 **raw** # Carpeta con los datos crudos extraídos  
-│ │ ├── 📄 ****init**.py**  
+│ │ ├── 📄 \***\*init**.py**  
 │ │ └── 📄 **raw.py** # Funciones para la extracción de datos  
 │ └── 📁 **database**  
-│ ├── 📄 ****init**.py**  
+│ ├── 📄 \*\***init**.py**  
 │ ├── 📄 **supabase_insertion.py** # Función para insertar datos en la base de datos  
 │ └── 📄 **supabasedb.py** # Configuración y conexión a Supabase  
 │  
