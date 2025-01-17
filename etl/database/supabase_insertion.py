@@ -94,7 +94,14 @@ def insert_data_from_dataframe(df: pd.DataFrame, dbclient, table_name: str) -> N
                 .upsert(records, on_conflict=["date"])
                 .execute()
             )
-            print(f"Inserted {len(records)} records into Supabase")
+
+            if hasattr(response, "data"):
+                print(f"Inserted {len(response.data)} records into Supabase.")
+            elif hasattr(response, "error"):
+                print(f"Error en la respuesta de Supabase: {response.error}")
+            else:
+                print(f"Respuesta inesperada de Supabase: {response}")
+
         except Exception as e:
             print(f"Error inserting data into Supabase: {str(e)}")
     else:
