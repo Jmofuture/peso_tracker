@@ -9,37 +9,14 @@ def insert_data_from_dataframe(df: pd.DataFrame, dbclient, table_name: str) -> N
     """
     Insert data from a pandas DataFrame into a Supabase table.
 
-    This function processes a DataFrame containing currency exchange data,
-    cleans and formats the data, and inserts it into the "peso_tracker" table
-    in a Supabase database. Rows with conflicting "date" values are upserted.
-
     Args:
-        df (pd.DataFrame):
-            The DataFrame containing the data to be inserted. It should have the
-            following columns:
-            - "date": The date of the record (string or datetime).
-            - "usd_buy", "usd_sell", "ebrou_usd_buy", "ebrou_usd_sell",
-              "eur_buy", "eur_sell", "ars_buy", "ars_sell", "brl_buy", "brl_sell":
-              Numeric columns representing exchange rates for different currencies.
-        dbclient:
-            A Supabase client instance used to interact with the database.
+        df (pd.DataFrame): DataFrame with the data to be inserted.
+        dbclient: Supabase client instance.
+        table_name (str): Name of the table in Supabase.
 
     Returns:
         None
-
-    Raises:
-        ValueError:
-            If a row in the DataFrame contains invalid data that cannot be processed.
-        Exception:
-            If there is an error while inserting data into the database.
-
-    Notes:
-        - The function replaces any occurrence of ".." in the DataFrame with `None`.
-        - NaN values are also replaced with `None` for compatibility with the database.
-        - Dates are converted to the format "YYYY-MM-DD".
-        - Invalid rows (e.g., rows with parsing errors) are skipped, and a warning is printed.
     """
-
     if df is None:
         print("El DataFrame está vacío o no se cargó correctamente.")
         return
@@ -95,13 +72,17 @@ def insert_data_from_dataframe(df: pd.DataFrame, dbclient, table_name: str) -> N
                 .execute()
             )
 
-            if hasattr(response, "data"):
-                print(f"Inserted {len(response.data)} records into Supabase.")
-            elif hasattr(response, "error"):
+            # Imprimir todo el objeto de respuesta para depuración
+            print("Respuesta completa de Supabase:")
+            print(response)
+
+            # Manejar errores o verificar éxito
+            if hasattr(response, "data") and response.data:
+                print(f"Inserted {len(records)} records into Supabase")
+            elif hasattr(response, "error") and response.error:
                 print(f"Error en la respuesta de Supabase: {response.error}")
             else:
-                print(f"Respuesta inesperada de Supabase: {response}")
-
+                print("Respuesta inesperada de Supabase.")
         except Exception as e:
             print(f"Error inserting data into Supabase: {str(e)}")
     else:
